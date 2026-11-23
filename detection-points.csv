@@ -1,0 +1,37 @@
+id,category,name,impl_source,smali_path,trigger,threshold,consequence,status
+E01,env,Xposed检测,EasyProtectorLib.java,classes/縰丒…/熏燵婨左崘畱噛淜/櫼螉彬彆/阙蔬.smali,BaseActivity.onResume,XposedBridge 存在/disableHooks 被改,Toast+finish,live
+E02,env,Frida端口探测,SecurityCheckUtils.java,classes3/珂函筙…/阙蔬/伎险射筡蚓.smali,BaseActivity.onResume,127.0.0.1:27042 与 27047,Toast+finish,live
+E03,env,Frida进程扫描,SecurityCheckUtils.java,classes3/珂函筙…/阙蔬/伎险射筡蚓.smali,BaseActivity.onResume,getRunningServices 进程名 contains "frida",Toast+finish,live
+E04,env,假定位App检测,SecurityCheckUtils.java,classes3/珂函筙…/阙蔬/伎险射筡蚓.smali,BaseActivity.onResume,包名 com.lerist.fakelocation 存在,Toast+finish,live
+E05,env,多开/分身检测,VirtualApkCheckUtil.java,classes/縰丒…/櫼螉彬彆/鉩槣锉孤鋙迖执籢趬.smali,BaseActivity.onResume,6 个分身框架包名 + cgroup + tcp6 + topActivity,Toast+finish,live
+E06,env,反调试(TracerPid),SecurityCheckUtil.java,classes/縰丒…/櫼螉彬彆/酽碶睃戉侽蘄漝.smali,BaseActivity.onResume(isOpenMore 后),/proc/<pid>/status TracerPid != 0,Toast+finish,live
+E07,env,模拟器(Build属性),Utils.java,classes3/珂函筙…/嵋鵹躐使骩/坧肩羘隌焰罘錘睇驲朇覛.smali,LoginActivity.initView,11 条 Build 属性 OR,Toast+finish,live
+E08,env,模拟器(光线传感器),Utils.java(方法 蝇碩艵),同上,登录页,getDefaultSensor(5) == null,Toast+finish,live
+E09,env,模拟器(温度传感器),Utils.java(方法 倁凒…),同上,登录页,getDefaultSensor(13) == null,Toast+finish,live
+E10,env,无障碍服务检测,AccessibilityServicesCheckUtil.java,classes/縰丒…/櫼螉彬彆/彐叐凴瀱砰漆摯.smali,组合调用,accessibility_enabled / enabled_accessibility_services,引导去关闭,live
+E11,env,root检测,SecurityCheckUtil.java,classes/縰丒…/櫼螉彬彆/酽碶睃戉侽蘄漝.smali,仅被死方法调用,8 条 su 路径 File.exists,无,live
+E12,env,签名校验,SecurityCheckUtil.java,同上,仅被死方法调用,PackageInfo.signatures,无,dead
+E13,env,充电状态,SecurityCheckUtil.java,同上,仅被死方法调用,BATTERY_CHANGED plugged,无,dead
+E14,env,评分制模拟器检测,EmulatorCheckUtil.java,classes/縰丒…/櫼螉彬彆/秪踖拽炅鮤幕諭紨伨.smali,无业务调用,9 项打分 > 3,无,dead
+E15,env,Mock位置自研检测,CheckMockLocation.java,classes3/珂函筙…/阙蔬/輬欏磞.smali,无调用,ACCESS_MOCK_LOCATION App 数>0 / Settings.mock_location!=0,无,dead
+E16,env,Build打分制(6项),Utils.java(方法 彧猊…),classes3/珂函筙…/坧肩羘隌焰罘錘睇驲朇覛.smali,零调用,baseband/flavor/board/platform/hardware(ttvm,nox)/cgroup > 3,无,dead
+R01,runtime,定位错误码过滤,AMAPLocationService_.java,classes3/net/crigh/cgsport/mysport_/AMAPLocationService_$櫼螉彬彆.smali,每点,getErrorCode() != 0,丢点,live
+R02,runtime,定位类型白名单,AMAPLocationService_.java,同上,每点,getLocationType()==0 或 >=6,丢点,live
+R03,runtime,精度分级,AMAPLocationService_.java,同上,每点,20m / 35m / LocationConfig.c(100),UI提示+标记,live
+R04,runtime,段速度超限,AMAPLocationService_.java + Handler,classes3/…/軎硘鈴甉/憹釠輂鯺秋綍筴寸銧.smali,每段,瞬时速度阈值,该段不计里程(点仍上传),live
+R05,runtime,途经点命中,AMAPLocationService_.java,classes3/net/crigh/cgsport/mysport_/AMAPLocationService_.smali,每点,到下一必经点直线距离 <= 60.0m,记录 alreadypasspoint,live
+R06,runtime,暂停点标记,AMAPLocationService_.java,同上,每点,(运动中 && !暂停中)?0:1,Status=1 仍上传,live
+R07,runtime,计步折算,AMAPLocationService_$礕萻….java,classes3/…/AMAPLocationService_$礕萻….smali,每点,步长 0.5/0.7/1.1m (v<1.7 / 1.7-2.5 / >2.5),累加里程,live
+R08,runtime,轨迹拟合诊断,PointTrace.java,classes3/珂函筙…/珂函筙/彐叐凴瀱砰漆摯.smali,列表更新,最小二乘 + leverage,着色/重绘,live
+R09,runtime,时间戳来源,AMAPLocationService_.java,同上,每点,System.currentTimeMillis(无本地校验),timestep 上行,live
+D01,data,上传载荷组装,UploadJsonSports.java,classes3/net/crigh/cgsport/model/UploadJsonSports.smali,提交,33 字段,POST api/l/v7/savesports,live
+D02,data,传感器波形上传,SchoolService.java,classes3/珂函筙…/溇幞蔜軾腫訴.smali,提交,Field sensorFile / Query sensorZipFile,服务端重算,live
+D03,data,照片上传,SchoolService.java,同上,提交,xh/sportId/images,服务端,live
+D04,data,人脸结果上传,SchoolService.java,同上,提交,xh/sportId/authType/authInfos,服务端,live
+S01,server,无效原因码表,InvalidConfig.java,classes3/net/crigh/cgsport/model/InvalidConfig.smali,GET api/l/v6.1/sports/invalidconf,code/reason/reasonDes,展示,server
+S02,server,判定回执,SportResult.java,classes3/net/crigh/cgsport/model/SportResult.smali,POST savesports,isValid/checkStatus/inValidReason/tip,展示,server
+S03,server,作弊提示,CheatTip.java,classes3/net/crigh/cgsport/model/CheatTip.smali,GET api/l/sport/tip,title/content,弹窗,server
+S04,server,补证据,SchoolService.java,同上,GET needUpdateSportlist / POST needUpdateSport/sure,xh/sportId,补传,server
+S05,server,申诉,SchoolService.java,同上,GET/POST reconsider,content/sportId/contact,工单,server
+C01,crypto,请求加密,ChingoEncrypt(native),classes3/net/crigh/api/encrypt/ChingoEncrypt.smali,所有请求,loadLibrary AMapSDK_Location_v6_6_0; cgapiAESEncrypt/cgapiEnrypt/cgapiVerify,AES+验签,live
+C02,crypto,伪装SO,libAMapSDK_Location_v6_6_0.so,lib/arm64-v8a/libAMapSDK_Location_v6_6_0.so,加载,仅 1 个 JNI 导出 + tiny-AES,抬高伪造门槛,live
